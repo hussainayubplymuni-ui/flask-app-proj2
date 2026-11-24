@@ -1,3 +1,6 @@
+import os
+
+APP_ENV = os.getenv("APP_ENV", "development")
 
 from flask import Flask, request
 
@@ -97,4 +100,8 @@ def divide():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
+# Environment API
 
+@app.route('/environment')
+def environment():
+    return {"environment": APP_ENV}
