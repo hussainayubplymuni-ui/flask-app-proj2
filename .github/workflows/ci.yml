@@ -54,3 +54,26 @@ jobs:
             hussainayub/flask-calculator-api:latest
             hussainayub/flask-calculator-api:${{ github.sha }}
 
+  deploy:
+    needs: build-and-push
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull latest Docker image
+        run: docker pull hussainayub/flask-calculator-api:latest
+
+      - name: Stop old container
+        run: docker stop flask-api-deployed || true
+
+      - name: Remove old container
+        run: docker rm flask-api-deployed || true
+
+      - name: Start updated container
+        run: |
+          docker run -d \
+            --name flask-api-deployed \
+            --restart unless-stopped \
+            -p 5002:5000 \
+            -e APP_ENV=production \
+            hussainayub/flask-calculator-api:latest
+
